@@ -24,10 +24,9 @@ def main():
     # Command
     if fileValid:
         #psuedo-code
-        readYaml(filepath)
-        # createVagrantFiles(filepath) (this can just skip out if
-        #   os.path.getmtime(filepath) is not changed)
-        #
+        config = readYaml(filepath)
+        verifyConfig(config) # i.e. check the essentials for life are there.
+        createVagrantFiles(config, filepath)
         switch(command)
         # Finished
         exit(1)
@@ -38,10 +37,33 @@ def readYaml( filepath ):
     try:
         config = yaml.load(file(filepath, 'r'))
     except yaml.YAMLError, err:
-        print filepath, "contains error(s)."
+        print filepath, "contains error(s).", err
         exit(2)
 
-    print config
+    return config
+
+def verifyConfig( config ):
+    # Minimum, each box must have..
+        # box
+        # hostname
+        # network
+    # Everything else is just extra.
+    for box in config['boxes']:
+        try:
+            box['box']
+            box['hostname']
+            box['network']
+        except:
+            print "Missing essential information. Exiting"
+            exit(2)
+        print box['box'],'\n', box['hostname'],'\n', box['network'],'\n'
+    print "All boxes have minimum required configuration"
+
+def createVagrantFiles( config, filepath ):
+    # Check to see if existing WORK_DIR/name exists
+    # If it does, check the difference between /lastmod file and os.path.getmtime(filepath)
+    # If it requires changing, run the templating functions to turn config into a vagrant file
+    # If it doesn't, or after completion, return/end/whatever.
 
 def checkFileValid( filepath ):
     # print "Filepath is: ", filepath
