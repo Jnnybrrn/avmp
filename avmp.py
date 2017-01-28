@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
-import argparse, sys, os
+import argparse, sys, os, yaml
 
 def main():
     # Define arguments
@@ -12,7 +12,7 @@ def main():
     args = parser.parse_args()
 
     # Store arguments
-    global verbose, filename
+    global verbose
     verbose = args.verbose
     filepath = args.file
     command = args.command
@@ -23,10 +23,25 @@ def main():
 
     # Command
     if fileValid:
+        #psuedo-code
+        readYaml(filepath)
+        # createVagrantFiles(filepath) (this can just skip out if
+        #   os.path.getmtime(filepath) is not changed)
+        #
         switch(command)
-    else:
         # Finished
         exit(1)
+    else:
+        exit(2)
+
+def readYaml( filepath ):
+    try:
+        config = yaml.load(file(filepath, 'r'))
+    except yaml.YAMLError, err:
+        print filepath, "contains error(s)."
+        exit(2)
+
+    print config
 
 def checkFileValid( filepath ):
     # print "Filepath is: ", filepath
