@@ -17,6 +17,9 @@ def main():
     filepath = args.file
     command = args.command
 
+    # Load avmp config
+    avmp = yaml.safe_load(file('etc/avmp.conf', 'r'))
+
     # Do actions based on arguments
     # Filepath
     fileValid = checkFileValid(filepath)
@@ -35,7 +38,7 @@ def main():
 
 def readYaml( filepath ):
     try:
-        config = yaml.load(file(filepath, 'r'))
+        config = yaml.safe_load(file(filepath, 'r'))
     except yaml.YAMLError, err:
         print filepath, "contains error(s).", err
         exit(2)
@@ -64,6 +67,7 @@ def createVagrantFiles( config, filepath ):
     # If it does, check the difference between /lastmod file and os.path.getmtime(filepath)
     # If it requires changing, run the templating functions to turn config into a vagrant file
     # If it doesn't, or after completion, return/end/whatever.
+    return True
 
 def checkFileValid( filepath ):
     # print "Filepath is: ", filepath
