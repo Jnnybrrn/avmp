@@ -1,0 +1,23 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/jessie64"
+  config.vm.hostname = "deb-example"
+  config.vm.network :private_network, ip: "192.168.0.42"
+  config.vm.communicator = "ssh"
+
+  config.vm.provider :virtualbox do |vb|
+    vb.name = "MyExampleMachine"
+    vb.customize [
+      "modifyvm", :id,
+      "--cpuexecutioncap", "50"
+    ]
+  end
+
+  config.vm.provision :a do |a|
+    a.inline = "echo hello"
+  end
+
+  config.vm.provision :b do |b|
+    b.inline = "echo world"
+  end
+
+end
