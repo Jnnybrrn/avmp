@@ -60,7 +60,7 @@ def verifyConfig( config ):
             print "Missing essential information. Exiting"
             exit(2)
         print box['box'],'\n', box['hostname'],'\n', box['network'],'\n'
-    print "All boxes have minimum required configuration"
+    verbosePrint("All boxes have minimum required configuration")
 
 def createVagrantFiles( config, filepath ):
     # Check to see if existing WORK_DIR/name exists
@@ -75,8 +75,6 @@ def checkFileValid( filepath ):
     # print "Dirname is: ", os.path.dirname(filepath)
     if os.path.exists(filepath):
         if os.path.isfile(filepath):
-            print "This file exists"
-            print "LastModifiedTime is: ", os.path.getmtime(filepath)
             try:
                 with open(filepath) as tempFile:
                     return True
@@ -105,25 +103,29 @@ def switch( command ):
 
 def up():
     if verbose:
-        print "The Command you entered was: Up"
+        verbosePrint("The Command you entered was: Up")
         return
     print "Command:  Up"
 
 def status():
     if verbose:
-        print "The Command you entered was: Status"
+        verbosePrint("The Command you entered was: Status")
         return
     print "Command: Status"
 
 def destroy():
     if verbose:
-        print "The Command you entered was: Destroy"
+        verbosePrint("The Command you entered was: Destroy")
         return
     print "Command: Destroy"
 
 def exit(code):
     # Do any shutdown steps here
     sys.exit(code)
+
+def verbosePrint(string):
+    if verbose:
+        print string
 
 if __name__ == "__main__":
     main()
