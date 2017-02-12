@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import argparse, sys, os, yaml, pprint, time
+# TODO: Maybe only bring in what we really need
+import argparse, sys, os, yaml, pprint, time, jinja2
 
 def main():
     # Define arguments
@@ -104,7 +105,11 @@ def checkVagrantFiles( config, filepath ):
 
 def createVagrantFiles( config, filepath, avmpPath ):
     # Run the templating functions to turn config into a vagrant file
-
+    env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader('templates')
+    )
+    template = env.get_template('vagrantfile.template')
+    print template.render(boxes=config['boxes'])
 
     # And update /lastmod
     with open(avmpPath+"/lastmod", "w") as lastmod:

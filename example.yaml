@@ -11,14 +11,16 @@ boxes:
       name: virtualbox
       customize: ["--cpuexecutioncap", "50"]
     provision:
-      a:
+      - a:
+        type: "shell"
         inline: "echo hello"
-      b:
+      - b:
         inline: "echo world"
     synced_folders:
     network:
       metatype: private_network
       ip: 192.168.3.66 # or type:dhcp
+    raw: "This is just gonna be whatever random crap"
 
   - name: MyExampleMachine2
     box: debian/jessie64

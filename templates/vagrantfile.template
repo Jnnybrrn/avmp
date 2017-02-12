@@ -1,0 +1,34 @@
+# TODO: This file needs converting from quik (rubbish!!) to jinja2 (hopefully less rubbish)
+#http://jinja.pocoo.org/docs/2.9/
+
+Vagrant.configure("2") do |config|
+  #for @box in @boxes:
+    config.vm.define "@box.name" do |@box.name|
+    @{box.name}.vm.box = @box.box
+    @{box.name}.vm.hostname = @box.hostname
+    # TODO: If DHCP behave differently.
+    @{box.name}.vm.network :@box.network.metatype, ip: @box.network.ip
+
+    #if @box.communicator:
+    @{box.name}.vm.communicator = @box.communicator
+    #end
+
+    # TODO: Flesh this out to support multiple providers (or just always assume VB)
+    @{box.name}.vm.provider :@box.provider.name do |prvdr|
+      prvdr.name = @box.name
+      #if @box.provider.customize:
+      prvdr.customize [
+        "modifyvm", :id,
+        #for @item in @box.provider.customize:
+          @item,
+        #end
+      ]
+      #end
+    end
+
+    #if @box.raw
+    @!box.raw
+    #end
+
+  #end
+end
