@@ -19,7 +19,7 @@ include /usr/share/dpkg/default.mk
 
 # main packaging script based on dh7 syntax
 %:
-	dh $@ 
+	dh $@
 
 # debmake generated override targets
 # This is example for Cmake (See http://bugs.debian.org/641051 )
@@ -27,6 +27,4 @@ include /usr/share/dpkg/default.mk
 #	dh_auto_configure -- \
 #	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
 
-
-
-
+pip install quik

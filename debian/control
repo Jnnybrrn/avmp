@@ -8,7 +8,7 @@ Homepage: https://github.com/Jnnybrrn/avmp
 
 Package: avmp
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python-yaml
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-yaml, python-pip
 Description: avmp - Automatic Virtual Machine Provisioner
  Automatic Virtual Machine Provisioner - create re-usable Virtual machine
  environments.
