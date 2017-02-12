@@ -1,23 +1,39 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "debian/jessie64"
-  config.vm.hostname = "deb-example"
-  config.vm.network :private_network, ip: "192.168.0.42"
-  config.vm.communicator = "ssh"
+  config.vm.define "vm1" do |vm1|
+    vm1.vm.box = "debian/jessie64"
+    vm1.vm.hostname = "deb-example"
+    vm1.vm.network :private_network, ip: "192.168.3.42"
+    vm1.vm.communicator = "ssh"
 
-  config.vm.provider :virtualbox do |vb|
-    vb.name = "MyExampleMachine"
-    vb.customize [
-      "modifyvm", :id,
-      "--cpuexecutioncap", "50"
-    ]
+    vm1.vm.provider :virtualbox do |vb|
+      vb.name = "MyExampleMachine"
+      vb.customize [
+        "modifyvm", :id,
+        "--cpuexecutioncap", "50"
+      ]
+    end
+
+    vm1.vm.provision "shell",inline: "echo hello"
+
+    vm1.vm.provision "shell",inline: "echo world"
   end
 
-  config.vm.provision :a do |a|
-    a.inline = "echo hello"
-  end
+  config.vm.define "vm2" do |vm2|
+    vm2.vm.box = "debian/jessie64"
+    vm2.vm.hostname = "deb-example2"
+    vm2.vm.network :private_network, ip: "192.168.3.43"
+    vm2.vm.communicator = "ssh"
 
-  config.vm.provision :b do |b|
-    b.inline = "echo world"
-  end
+    vm2.vm.provider :virtualbox do |vb|
+      vb.name = "MyExampleMachine2"
+      vb.customize [
+        "modifyvm", :id,
+        "--cpuexecutioncap", "50"
+      ]
+    end
 
+    vm2.vm.provision "shell",inline: "echo hello"
+
+    vm2.vm.provision "shell",inline: "echo world"
+  end
 end

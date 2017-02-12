@@ -1,9 +1,10 @@
-# General stuff
-name: MyExampleMachine
+# Global information
+avmpName: "firstTests"
 
 boxes:
   # config.vm.<foo>
-  - box: debian/jessie64
+  - name: MyExampleMachine
+    box: debian/jessie64
     communicator: ssh
     hostname: deb-example
     provider:
@@ -17,4 +18,21 @@ boxes:
     synced_folders:
     network:
       metatype: private_network
-      ip: 192.168.0.66 # or type:dhcp
+      ip: 192.168.3.66 # or type:dhcp
+
+  - name: MyExampleMachine2
+    box: debian/jessie64
+    communicator: ssh
+    hostname: deb-example2
+    provider:
+      name: virtualbox
+      customize: ["--cpuexecutioncap", "50"]
+    provision:
+      a:
+        inline: "echo hello"
+      b:
+        inline: "echo world"
+    synced_folders:
+    network:
+      metatype: private_network
+      ip: 192.168.3.67 # or type:dhcp
