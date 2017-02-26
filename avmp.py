@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # TODO: Maybe only bring in what we really need
-import argparse, sys, os, yaml, pprint, time, jinja2
+import argparse, sys, os, yaml, pprint, time, jinja2, subprocess
 
 def main():
     # Define arguments
@@ -10,16 +10,18 @@ def main():
     parser.add_argument('command', type=str, default='status',
         help='command: [up|status|destroy]')
     parser.add_argument('-v','--verbose', help='increase verbosity', action="store_true")
+    parser.add_argument('-f','--force', help='force regeneration of vagrantfile', action="store_true")
     args = parser.parse_args()
 
     # Store arguments
-    global verbose
+    global verbose, force
     verbose = args.verbose
+    force = args.force
     filepath = args.file
     command = args.command
 
     # Load avmp config
-    global avmp
+    global avmp, avmpPath
     avmp = yaml.safe_load(file('etc/avmp.conf', 'r'))
     avmp['WORK_DIR'] = os.path.expanduser(avmp['WORK_DIR'])
 
@@ -36,6 +38,7 @@ def main():
         #psuedo-code
         config = readYaml(filepath)
         verifyConfig(config) # i.e. check the essentials for life are there.
+        avmpPath = avmp['WORK_DIR']+config['avmpName']
         checkVagrantFiles(config, filepath)
         switch(command)
         # Finished
@@ -73,29 +76,31 @@ def verifyConfig( config ):
         except:
             print "Missing essential information. Exiting"
             exit(2)
-        print box['box'],'\n', box['name'],'\n', box['hostname'],'\n', box['network'],'\n'
     verbosePrint("All boxes have minimum required configuration")
 
 def checkVagrantFiles( config, filepath ):
     # Check to see if existing WORK_DIR/name exists
-    avmpPath = avmp['WORK_DIR']+config['avmpName']
     # If it does, check the difference between /lastmod file and os.path.getmtime(filepath)
     if os.path.exists(avmpPath):
         lastmodPath = avmpPath+"/lastmod"
-        if checkFileValid(lastmodPath):
-            lastmodfile = open(lastmodPath, "r")
-            lastmod = lastmodfile.read()
-            lastmodfile.close()
-            if (lastmod < os.path.getmtime(filepath)):
-                verbosePrint("Found new changes, updating Vagrant files")
-                createVagrantFiles(config, filepath, avmpPath)
-            else:
-                # We're already up to date.
-                return
-        # No /lastmod file, assume old
+        if (force):
+            verbosePrint("Forced regeneration of vagrantfile")
+            createVagrantFiles(config, filepath)
         else:
-            verbosePrint("No lastmod file found, updating Vagrant files")
-            createVagrantFiles(config, filepath, avmpPath)
+            if checkFileValid(lastmodPath):
+                lastmodfile = open(lastmodPath, "r")
+                lastmod = lastmodfile.read()
+                lastmodfile.close()
+                if (lastmod < os.path.getmtime(filepath)):
+                    verbosePrint("Found new changes, updating Vagrant files")
+                    createVagrantFiles(config, filepath)
+                else:
+                    # We're already up to date.
+                    return
+            # No /lastmod file, assume old
+            else:
+                verbosePrint("No lastmod file found, updating Vagrant files")
+                createVagrantFiles(config, filepath)
     # No directory, assume new .yaml, create dir + continue
     else:
         verbosePrint(avmpPath + " does not exist, creating it..")
@@ -103,7 +108,7 @@ def checkVagrantFiles( config, filepath ):
         verbosePrint("Updating Vagrant files")
         createVagrantFiles(config, filepath, avmpPath)
 
-def createVagrantFiles( config, filepath, avmpPath ):
+def createVagrantFiles( config, filepath ):
     # Run the templating functions to turn config into a vagrant file
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader('templates')
@@ -148,28 +153,39 @@ def checkFileValid( filepath ):
 def switch( command ):
     if command == 'up':
         up()
+    elif command == 'provision':
+        provision()
     elif command == 'status':
         status()
     elif command == 'destroy':
         destroy()
+    else:
+        tryOther(command)
 
 def up():
-    if verbose:
-        verbosePrint("The Command you entered was: Up")
-        return
-    print "Command:  Up"
+    verbosePrint("The Command you entered was: Up")
+    up = subprocess.check_call(['vagrant', 'up'], cwd=avmpPath)
+    print "avmp: Up finished."
+
+def provision():
+    verbosePrint("The Command you entered was: Up")
+    provision = subprocess.check_call(['vagrant', 'provision'], cwd=avmpPath)
+    print "avmp: Up finished."
 
 def status():
-    if verbose:
-        verbosePrint("The Command you entered was: Status")
-        return
-    print "Command: Status"
+    verbosePrint("The Command you entered was: Status")
+    status = subprocess.check_call(['vagrant', 'status'], cwd=avmpPath)
+    print "avmp: Status finished"
 
 def destroy():
-    if verbose:
-        verbosePrint("The Command you entered was: Destroy")
-        return
-    print "Command: Destroy"
+    verbosePrint("The Command you entered was: Destroy")
+    destroy = subprocess.check_call(['vagrant', 'destroy'], cwd=avmpPath)
+    print "avmp: Destroy finished"
+
+def tryOther(command):
+    verbosePrint("Attempting to run unknown command..")
+    other = subprocess.check_call(['vagrant', command], cwd=avmpPath)
+    print "avmp: tryOther finished"
 
 def exit(code):
     # Do any shutdown steps here
