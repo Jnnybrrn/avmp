@@ -1,34 +1,35 @@
-# TODO: This file needs converting from quik (rubbish!!) to jinja2 (hopefully less rubbish)
 #http://jinja.pocoo.org/docs/2.9/
 
 Vagrant.configure("2") do |config|
-  #for @box in @boxes:
-    config.vm.define "@box.name" do |@box.name|
-    @{box.name}.vm.box = @box.box
-    @{box.name}.vm.hostname = @box.hostname
+  {% for box in boxes %}
+    {% set boxName = box.name|lower %}
+    config.vm.define "{{ box.name }}" do |{{ boxName }}|
+    {{ boxName }}.vm.box = "{{ box.box }}"
+    {{ boxName }}.vm.hostname = "{{ box.hostname }}"
     # TODO: If DHCP behave differently.
-    @{box.name}.vm.network :@box.network.metatype, ip: @box.network.ip
+    {{ boxName }}.vm.network :{{ box.network.metatype }}, ip: "{{ box.network.ip }}"
 
-    #if @box.communicator:
-    @{box.name}.vm.communicator = @box.communicator
-    #end
+    {% if box.communicator %}
+    {{ boxName }}.vm.communicator = "{{ box.communicator }}"
+    {% endif %}
 
     # TODO: Flesh this out to support multiple providers (or just always assume VB)
-    @{box.name}.vm.provider :@box.provider.name do |prvdr|
-      prvdr.name = @box.name
-      #if @box.provider.customize:
+    {{ boxName }}.vm.provider :{{ box.provider.name }} do |prvdr|
+      prvdr.name = "{{ box.name }}"
+      {% if box.provider.customize %}
       prvdr.customize [
         "modifyvm", :id,
-        #for @item in @box.provider.customize:
-          @item,
-        #end
+        {% for item in box.provider.customize %}
+          "{{ item }}",
+        {% endfor %}
       ]
-      #end
+      {% endif %}
     end
 
-    #if @box.raw
-    @!box.raw
-    #end
+    {% if box.raw %}
+    {{ box.raw }}
+    {% endif %}
 
-  #end
+  end
+  {% endfor %}
 end

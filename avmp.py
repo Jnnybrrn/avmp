@@ -109,7 +109,10 @@ def createVagrantFiles( config, filepath, avmpPath ):
         loader=jinja2.FileSystemLoader('templates')
     )
     template = env.get_template('vagrantfile.template')
-    print template.render(boxes=config['boxes'])
+
+    with open(avmpPath+"/vagrantfile", "w") as outputfile:
+        outputfile.write(template.render(boxes=config['boxes']));
+    verbosePrint("Written new vagrantfile from template");
 
     # And update /lastmod
     with open(avmpPath+"/lastmod", "w") as lastmod:
