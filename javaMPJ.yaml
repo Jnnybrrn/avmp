@@ -1,0 +1,16 @@
+# Global information
+avmpName: "MPJ"
+
+boxes:
+  - name: mpj1
+    box: debian/contrib-jessie64
+    hostname: mpj1
+    scripts:
+      - path: scripts/mpj-setup.sh
+    synced_folders:
+      - src: sync/mpj-v0_35PO2
+        dest: /mpj
+    network:
+      type: private_network
+      details:
+        ip: 192.168.3.99

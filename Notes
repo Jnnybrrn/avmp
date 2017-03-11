@@ -1,0 +1,16 @@
+Notes:
+
+To run the daemon... just ./avmp.py -f -v javaMPJ.yaml up
+
+To run the jobs.. Need to have...
+
+1. Copy of the mpj-v0_44 files..
+2. .bashrc needs x/y/z in it.
+  - e.g.
+  export MPJ_HOME=~/mpj
+  export PATH=$MPJ_HOME/bin:$PATH
+  export CLASSPATH=$MPJ_HOME/lib/mpj.jar
+  export PATH=/usr/lib/jvm/java-1.7.0-opendjk-amd64/jre/bin/:$PATH
+
+3. To compile - `javac -cp /home/jon/mpj/lib/mpj.jar HelloWorld.java`
+4. To run - `mpjrun.sh -np 2 -dev niodev HelloWorld`
