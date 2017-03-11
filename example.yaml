@@ -7,10 +7,8 @@ boxes:
     box: debian/jessie64
     hostname: deb-example
     scripts:
-      - type: "shell"
-        inline: "echo hello"
-      - type: "shell"
-        path: "/home/jon/github/avmp/scripts/world.sh"
+      - inline: "echo hello"
+      - path: "/home/jon/github/avmp/scripts/world.sh"
     synced_folders:
     network:
       type: private_network
@@ -21,10 +19,8 @@ boxes:
     box: debian/jessie64
     hostname: deb-example2
     scripts:
-      - type: "shell"
-        inline: "echo hello"
-      - type: "shell"
-        path: "/home/jon/github/avmp/scripts/printsomething.sh"
+      - inline: "echo hello"
+      - path: "/home/jon/github/avmp/scripts/printsomething.sh"
         args: "foo"
     synced_folders:
     network:

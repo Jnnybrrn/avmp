@@ -36,18 +36,25 @@ Vagrant.configure("2") do |config|
     end
 
     {% for script in box.scripts %}
-    {{ boxName }}.vm.provision "{{ script.type }}" do |s|
-      {% for key, value in script.iteritems() %}
-      {% if not value == script.type %}
-      s.{{key}} = "{{value}}"
+      {% if script.type %}
+        {{ boxName }}.vm.provision "{{ script.type }}" do |s|
+          {% for key, value in script.iteritems() %}
+            {% if not value == script.type %}
+              s.{{key}} = "{{value}}"
+            {% endif %}
+          {% endfor %}
+      {% else %}
+        {{ boxName }}.vm.provision "shell" do |s|
+          {% for key, value in script.iteritems() %}
+              s.{{key}} = "{{value}}"
+          {% endfor %}
       {% endif %}
-      {% endfor %}
     end
 
     {% endfor %}
 
     {% if box.raw %}
-    {{ box.raw }}
+      {{ box.raw }}
     {% endif %}
 
   end
