@@ -25,6 +25,10 @@ def main():
     avmp = yaml.safe_load(file('avmp.conf', 'r'))
     avmp['WORK_DIR'] = os.path.expanduser(avmp['WORK_DIR'])
 
+    # Symlink local scripts/ to WORK_DIR/scripts
+    if not os.path.islink(avmp['WORK_DIR']+'/scripts'):
+        os.symlink('scripts', avmp['WORK_DIR']+'/scripts')
+
     # DEBUG - Remove
     global pp
     pp = pprint.PrettyPrinter(indent=4)

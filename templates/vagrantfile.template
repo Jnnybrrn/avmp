@@ -7,15 +7,23 @@ Vagrant.configure("2") do |config|
     {{ boxName }}.vm.box = "{{ box.box }}"
     {{ boxName }}.vm.hostname = "{{ box.hostname }}"
     # TODO: If DHCP behave differently.
-    {{ boxName }}.vm.network :{{ box.network.metatype }}, ip: "{{ box.network.ip }}"
+    {{ boxName }}.vm.network "{{ box.network.type }}",{% for key, value in box.network.details.iteritems() %}{{key}}: "{{value}}"{% if not loop.last %},{% endif %}{% endfor %}
 
     {% if box.communicator %}
     {{ boxName }}.vm.communicator = "{{ box.communicator }}"
+    {% else %}
+    {{ boxName }}.vm.communicator = "ssh"
     {% endif %}
 
     # TODO: Flesh this out to support multiple providers (or just always assume VB)
+    {% if box.provider %}
     {{ boxName }}.vm.provider :{{ box.provider.name }} do |prvdr|
+    {% else %}
+    {{ boxName }}.vm.provider :virtualbox do |prvdr|
+    {% endif %}
       prvdr.name = "{{ box.name }}"
+      {% if box.provider %}
+      # intentional double loop
       {% if box.provider.customize %}
       prvdr.customize [
         "modifyvm", :id,
@@ -24,7 +32,19 @@ Vagrant.configure("2") do |config|
         {% endfor %}
       ]
       {% endif %}
+      {% endif %}
     end
+
+    {% for script in box.scripts %}
+    {{ boxName }}.vm.provision "{{ script.type }}" do |s|
+      {% for key, value in script.iteritems() %}
+      {% if not value == script.type %}
+      s.{{key}} = "{{value}}"
+      {% endif %}
+      {% endfor %}
+    end
+
+    {% endfor %}
 
     {% if box.raw %}
     {{ box.raw }}
