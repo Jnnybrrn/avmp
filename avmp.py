@@ -22,7 +22,7 @@ def main():
 
     # Load avmp config
     global avmp, avmpPath
-    avmp = yaml.safe_load(file('etc/avmp.conf', 'r'))
+    avmp = yaml.safe_load(file('avmp.conf', 'r'))
     avmp['WORK_DIR'] = os.path.expanduser(avmp['WORK_DIR'])
 
     # DEBUG - Remove
