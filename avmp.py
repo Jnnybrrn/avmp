@@ -25,10 +25,6 @@ def main():
     avmp = yaml.safe_load(file('avmp.conf', 'r'))
     avmp['WORK_DIR'] = os.path.expanduser(avmp['WORK_DIR'])
 
-    # Symlink local scripts/ to WORK_DIR/scripts
-    if not os.path.islink(avmp['WORK_DIR']+'/scripts'):
-        os.symlink('scripts', avmp['WORK_DIR']+'/scripts')
-
     # DEBUG - Remove
     global pp
     pp = pprint.PrettyPrinter(indent=4)
@@ -113,6 +109,14 @@ def checkVagrantFiles( config, filepath ):
         createVagrantFiles(config, filepath)
 
 def createVagrantFiles( config, filepath ):
+    # Symlink local scripts/ to WORK_DIR/scripts
+    if not os.path.islink(avmpPath+'/scripts'):
+        os.symlink(os.getcwd()+'/scripts', avmpPath+'/scripts')
+
+    # Symlink local sync/ to WORK_DIR/sync
+    if not os.path.islink(avmpPath+'/sync'):
+        os.symlink(os.getcwd()+'/sync', avmpPath+'/sync')
+
     # Run the templating functions to turn config into a vagrant file
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader('templates')

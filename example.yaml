@@ -8,8 +8,7 @@ boxes:
     hostname: deb-example
     scripts:
       - inline: "echo hello"
-      - path: "/home/jon/github/avmp/scripts/world.sh"
-    synced_folders:
+      - path: "scripts/world.sh"
     network:
       type: private_network
       details:
@@ -20,9 +19,8 @@ boxes:
     hostname: deb-example2
     scripts:
       - inline: "echo hello"
-      - path: "/home/jon/github/avmp/scripts/printsomething.sh"
+      - path: "scripts/printsomething.sh"
         args: "foo"
-    synced_folders:
     network:
       type: private_network
       details:
