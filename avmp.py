@@ -106,7 +106,7 @@ def checkVagrantFiles( config, filepath ):
         verbosePrint(avmpPath + " does not exist, creating it..")
         os.makedirs(avmpPath)
         verbosePrint("Updating Vagrant files")
-        createVagrantFiles(config, filepath, avmpPath)
+        createVagrantFiles(config, filepath)
 
 def createVagrantFiles( config, filepath ):
     # Run the templating functions to turn config into a vagrant file
