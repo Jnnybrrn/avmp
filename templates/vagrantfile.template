@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
     {{ boxName }}.vm.box = "{{ machine.box }}"
     {{ boxName }}.vm.hostname = "{{ machine.hostname }}"
     # TODO: If DHCP behave differently.
-    {{ boxName }}.vm.network "{{ machine.network.type }}",{% for key, value in machine.network.details.iteritems() %}{{key}}: "{{value}}"{% if not loop.last %},{% endif %}{% endfor %}
+    {{ boxName }}.vm.network "{{ machine.network.type }}"{% if machine.network.details %},{% for key, value in machine.network.details.iteritems() %}{{key}}: "{{value}}"{% if not loop.last %},{% endif %}{% endfor %}{% endif %}
 
     {% if machine.communicator %}
     {{ boxName }}.vm.communicator = "{{ machine.communicator }}"

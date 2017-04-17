@@ -90,7 +90,7 @@ def checkVagrantFiles( config, filepath ):
                 lastmodfile = open(lastmodPath, "r")
                 lastmod = lastmodfile.read()
                 lastmodfile.close()
-                if (lastmod < os.path.getmtime(filepath)):
+                if (lastmod != os.path.getmtime(filepath)):
                     verbosePrint("Found new changes, updating Vagrant files")
                     createVagrantFiles(config, filepath)
                 else:
