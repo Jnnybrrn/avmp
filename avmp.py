@@ -11,7 +11,7 @@ def main():
         help='command: [up|status|destroy]')
     parser.add_argument('-v','--verbose', help='increase verbosity', action="store_true")
     parser.add_argument('-f','--force', help='force regeneration of vagrantfile', action="store_true")
-    args = parser.parse_args()
+    args, options = parser.parse_known_args()
 
     # Store arguments
     global verbose, force
@@ -40,7 +40,7 @@ def main():
         verifyConfig(config) # i.e. check the essentials for life are there.
         avmpPath = avmp['WORK_DIR']+config['avmpName']
         checkVagrantFiles(config, filepath)
-        switch(command)
+        runCommand(command, options)
         # Finished
         exit(1)
     else:
@@ -156,43 +156,12 @@ def checkFileValid( filepath ):
         print "File", filepath," not found (or no access)."
         return False
 
-
-def switch( command ):
-    if command == 'up':
-        up()
-    elif command == 'provision':
-        provision()
-    elif command == 'status':
-        status()
-    elif command == 'destroy':
-        destroy()
-    else:
-        tryOther(command)
-
-def up():
-    verbosePrint("The Command you entered was: Up")
-    up = subprocess.check_call(['vagrant', 'up'], cwd=avmpPath)
-    print "avmp: Up finished."
-
-def provision():
-    verbosePrint("The Command you entered was: Up")
-    provision = subprocess.check_call(['vagrant', 'provision'], cwd=avmpPath)
-    print "avmp: Up finished."
-
-def status():
-    verbosePrint("The Command you entered was: Status")
-    status = subprocess.check_call(['vagrant', 'status'], cwd=avmpPath)
-    print "avmp: Status finished"
-
-def destroy():
-    verbosePrint("The Command you entered was: Destroy")
-    destroy = subprocess.check_call(['vagrant', 'destroy'], cwd=avmpPath)
-    print "avmp: Destroy finished"
-
-def tryOther(command):
-    verbosePrint("Attempting to run unknown command..")
-    other = subprocess.check_call(['vagrant', command], cwd=avmpPath)
-    print "avmp: tryOther finished"
+def runCommand(command, options):
+    arguments = []
+    arguments.extend(['vagrant'])
+    arguments.extend([command])
+    arguments.extend(options)
+    command = subprocess.check_call(arguments, cwd=avmpPath)
 
 def exit(code):
     # Do any shutdown steps here
