@@ -1,0 +1,24 @@
+#
+# This example will create a Virtual Machine running apache2
+# The contents of
+#   - sync/apache will be ran on the server.
+#   - sync/apacheconfig will replace /etc/apache2 in the VM
+#
+
+avmpName: "webserver"
+
+machines:
+  - name: webserver
+    box: debian/contrib-jessie64
+    hostname: example-webserver
+    scripts:
+      - path: "scripts/webserver-setup.sh"
+    synced_folders:
+      - src: sync/apache
+        dest: /var/www/
+      - src: sync/apacheconfig
+        dest: /etc/apache2
+    network:
+      type: private_network
+      details:
+        ip: 192.168.3.67
