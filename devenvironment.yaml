@@ -1,0 +1,18 @@
+#
+# This example will create a Virtual Machine with Java SDK
+# sync/devEnv is linked into the VM at /devEnv
+#
+
+avmpName: "devenvironment"
+
+machines:
+  - name: devenvironment
+    box: debian/contrib-jessie64
+    hostname: example-devenvironment
+    scripts:
+      - inline: "sudo apt-get update; sudo apt-get install -y default-jdk"
+    synced_folders:
+      - src: sync/devEnv
+        dest: /devEnv
+    network:
+      type: public_network # dhcp
