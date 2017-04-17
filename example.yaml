@@ -1,7 +1,7 @@
 # Global information
 avmpName: "firstTests"
 
-boxes:
+machines:
   # config.vm.<foo>
   - name: MyExampleMachine
     box: debian/jessie64

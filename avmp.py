@@ -63,20 +63,19 @@ def verifyConfig( config ):
         exit(2)
     verbosePrint("avmpName set to " + config['avmpName'])
     # Minimum, each box must have..
+        # name
         # box
-        # hostname
         # network
     # Everything else is just extra.
-    for box in config['boxes']:
+    for machine in config['machines']:
         try:
-            box['name']
-            box['box']
-            box['hostname']
-            box['network']
+            machine['name']
+            machine['box']
+            machine['network']
         except:
             print "Missing essential information. Exiting"
             exit(2)
-    verbosePrint("All boxes have minimum required configuration")
+    verbosePrint("All machines have minimum required configuration")
 
 def checkVagrantFiles( config, filepath ):
     # Check to see if existing WORK_DIR/name exists
@@ -124,7 +123,7 @@ def createVagrantFiles( config, filepath ):
     template = env.get_template('vagrantfile.template')
 
     with open(avmpPath+"/vagrantfile", "w") as outputfile:
-        outputfile.write(template.render(boxes=config['boxes']));
+        outputfile.write(template.render(machines=config['machines']));
     verbosePrint("Written new vagrantfile from template");
 
     # And update /lastmod
