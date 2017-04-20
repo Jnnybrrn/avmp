@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-# TODO: Maybe only bring in what we really need
 import argparse, sys, os, yaml, pprint, time, jinja2, subprocess
 
 def main():
@@ -8,7 +7,7 @@ def main():
     parser = argparse.ArgumentParser(description='avmp: Automated Virtual Machine Provisioner.')
     parser.add_argument('file', type=str, help='avmp yaml file')
     parser.add_argument('command', type=str, default='status',
-        help='command: [up|status|destroy]')
+        help='command: [up|status|ssh|provision|destroy]')
     parser.add_argument('-v','--verbose', help='increase verbosity', action="store_true")
     parser.add_argument('-f','--force', help='force regeneration of vagrantfile', action="store_true")
     args, options = parser.parse_known_args()
@@ -25,17 +24,12 @@ def main():
     avmp = yaml.safe_load(file('avmp.conf', 'r'))
     avmp['WORK_DIR'] = os.path.expanduser(avmp['WORK_DIR'])
 
-    # DEBUG - Remove
-    global pp
-    pp = pprint.PrettyPrinter(indent=4)
-
     # Do actions based on arguments
     # Filepath
     fileValid = checkFileValid(filepath)
 
     # Command
     if fileValid:
-        #psuedo-code
         config = readYaml(filepath)
         verifyConfig(config) # i.e. check the essentials for life are there.
         avmpPath = avmp['WORK_DIR']+config['avmpName']
@@ -134,9 +128,6 @@ def createVagrantFiles( config, filepath ):
     return True
 
 def checkFileValid( filepath ):
-    # print "Filepath is: ", filepath
-    # print "File is: ", os.path.basename(filepath)
-    # print "Dirname is: ", os.path.dirname(filepath)
     if os.path.exists(filepath):
         if os.path.isfile(filepath):
             try:

@@ -19,7 +19,6 @@ Vagrant.configure("2") do |config|
       {{ boxName }}.vm.synced_folder "{{ folder.src }}", "{{ folder.dest }}"
     {% endfor %}
 
-    # TODO: Flesh this out to support multiple providers (or just always assume VB)
     {% if machine.provider %}
     {{ boxName }}.vm.provider :{{ machine.provider.name }} do |prvdr|
     {% else %}
